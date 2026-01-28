@@ -7,7 +7,15 @@ Conferences to consider:
 * 2026 IEEE Spoken Language Technology Workshop (SLT): December 13-16, 2026, Palermo, Italy
     * Submission deadline: TODO
 
-
-
 # Model Pipeline
 ![Training](figures/training.png)
+
+# TODO
+1. Audio loading from local
+2. Audio transformation
+3. Get public dataset
+4. SPARC model implementation - separate EMA and resynth, separate speaker identity
+5. WER/CER 
+6. UTMOS
+7. Speaker/vector similarity metrics
+8. Start building conversion model
