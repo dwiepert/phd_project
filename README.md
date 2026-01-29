@@ -11,6 +11,8 @@ Conferences to consider:
 ![Training](figures/training.png)
 
 # TODO
+add ffmpeg and torchcodec to setup 
+
 1. Audio loading from local
 2. Audio transformation
 3. Get public dataset
@@ -19,3 +21,4 @@ Conferences to consider:
 6. UTMOS
 7. Speaker/vector similarity metrics
 8. Start building conversion model
+
