@@ -1,5 +1,4 @@
 # PhD project
-
 Conferences to consider:
 * CARE Research Day: April 17, 2026
 * 2026 ASHA: November 19-21, 2026, Indiana 
@@ -7,15 +6,16 @@ Conferences to consider:
 * 2026 IEEE Spoken Language Technology Workshop (SLT): December 13-16, 2026, Palermo, Italy
     * Submission deadline: TODO
 
+# Package install
+`conda install ffmpeg`
+`cd  ./phd_project`
+`pip install .`
+
 # Model Pipeline
 ![Training](figures/training.png)
 
 # TODO
-add ffmpeg and torchcodec to setup 
-
-1. Audio loading from local
-2. Audio transformation
-3. Get public dataset
+1. SPLIT DATA
 4. SPARC model implementation - separate EMA and resynth, separate speaker identity
 5. WER/CER 
 6. UTMOS

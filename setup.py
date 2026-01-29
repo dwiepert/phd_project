@@ -11,7 +11,8 @@ setup(
         "pandas==2.3.3",
         "torch==2.10.0",
         "torchaudio==2.10.0",
-        "torchvision==0.25.0"
+        "torchvision==0.25.0", 
+        "torchcodec==0.10.0"
     ],
     include_package_data=False,
     version = __version__

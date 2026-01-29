@@ -1,0 +1,1 @@
+#TODO: check that ffmpeg is installed

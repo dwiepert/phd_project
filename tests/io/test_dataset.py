@@ -16,12 +16,25 @@ import pytest
 
 from acm.io import CustomDataset
 
+### HELPERS ###
 def create_metadata(path, excel=True):
-    data = {'uid': ['000', '001', '003', '004', '005','006'], 
-            'speakerID': ['aaa', 'bbb', 'ccc', 'ddd', 'eee','fff'], 
-            'file_name': ['harvard', 'harvard', 'harvard', 'harvard', 'harvard', 'harvard'], 
-            'task': ['sentence-repetition','sentence-repetition', 'sentence-repetition', 'sentence-repetition', 'sentence-repetition', 'random'], 
-            'split': ['train', 'val','val', 'test', 'random', 'train']}
+    data = {'uid': ['000', '001', '003', '004', '005','006', '007'], 
+            'speakerID': ['aaa', 'bbb', 'ccc', 'ddd', 'eee','fff', 'ggg'], 
+            'file_name': ['harvard', 'harvard', 'harvard', 'harvard', 'harvard', 'harvard', 'random'], 
+            'task': ['sentence-repetition','sentence-repetition', 'sentence-repetition', 'sentence-repetition', 'sentence-repetition', 'random', 'sentence-repetition'], 
+            'split': ['train', 'val','val', 'test', 'random', 'train', 'test']}
+    
+    data_df = pd.DataFrame(data)
+    data_df.to_csv(f'{path}.csv', index=False)
+    if excel:
+        data_df.to_excel(f'{path}.xlsx')
+
+def create_valid_metadata(path, excel=True):
+    data = {'uid': ['harvard', 'random'], 
+            'speakerID': ['aaa', 'bbb'], 
+            'file_name': ['harvard', 'random'], 
+            'task': ['sentence-repetition','sentence-repetition'], 
+            'split': ['train', 'val']}
     
     data_df = pd.DataFrame(data)
     data_df.to_csv(f'{path}.csv', index=False)
@@ -123,9 +136,31 @@ def test_metadata():
     
 
 def test_get_item():
-    #TODO: TEST GET ITEM (RESAMPLE+MONOPHONIC)
-    #TODO: TEST GET ITEM (+TRUNCATE)
-    return
+    str_audio_dir = 'tests/data'
+    base_path = 'tests/data/metadata'
+    str_metadata_path = f'{base_path}.csv'
+    create_valid_metadata(base_path, False)
+
+    d0 = CustomDataset(audio_dir=str_audio_dir, metadata_path=str_metadata_path)
+
+     #invalid index
+    with pytest.raises(IndexError):
+       sample0 = d0[6]
+
+    #non-existent audio 
+    with pytest.raises(RuntimeError):
+        sample0 = d0[1]
+
+    #audio exists, no truncate
+    sample1 = d0[0]
+    assert sample1['sample_rate'] == 16000
+
+    #audio exists, truncate
+    d1 = CustomDataset(audio_dir=str_audio_dir, metadata_path=str_metadata_path, truncate=.5)
+    sample2 = d1[0]
+    assert sample2['sample_rate'] == 16000
+    os.remove(str_metadata_path)
+
 
 def test_split():
     #TODO: TEST SPLIT
