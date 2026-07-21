@@ -9,10 +9,12 @@ setup(
     install_requires=[
         "numpy==2.2.6",
         "pandas==2.3.3",
-        "torch==2.10.0",
-        "torchaudio==2.10.0",
-        "torchvision==0.25.0", 
-        "torchcodec==0.10.0"
+        "torch==2.12.1",
+        "torchaudio==2.11.0",
+        "torchvision==0.27.1", 
+        "torchcodec==0.14.0",
+        "scikit-learn==1.9.0",
+        "google-cloud-storage==3.12.0"
     ],
     include_package_data=False,
     version = __version__

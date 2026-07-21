@@ -3,10 +3,10 @@ from acm.io._uid_to_waveform import UidToWaveform
 from acm.io._to_monophonic import ToMonophonic
 
 ### TESTS ###
-def test_monophonic_waveform():
-    str_audio_dir = 'tests/data'
+def test_monophonic_waveform(data_dir):
+    str_audio_dir = str(data_dir)
     
-    sample = {'uid': 'harvard'}
+    sample = {'uid': 'harvard', 'path': 'harvard'}
     utw = UidToWaveform(str_audio_dir)
     wav_sample = utw(sample)
     wav = wav_sample['waveform']

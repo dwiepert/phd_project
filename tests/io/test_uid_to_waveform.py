@@ -1,37 +1,41 @@
 import pytest
 from pathlib import Path
 from acm.io._uid_to_waveform import UidToWaveform
-import torch
+from acm.io._truncate import Truncate
+import torch 
 
-### TESTS ###
-def test_load_waveform():
-    #try with str 
-    str_audio_dir = 'tests/data'
-    path_audio_dir = Path(str_audio_dir)
-    extension = 'wav'
-    invalid_extension = 'csv'
+def test_init(data_dir):
+    """
+    """
+    uw0 = UidToWaveform(prefix=str(data_dir))
+    uw1 = UidToWaveform(prefix=Path(data_dir))
+
+    with pytest.raises(TypeError):
+        suw = UidToWaveform(prefix=1)
     
-    #invalid extension
-    sample0 = {'uid': 'harvard'}
+    with pytest.raises(AssertionError):
+        uw = UidToWaveform(prefix=data_dir, extension='random')
+
+    #TODO: test gcs_config
+
+def test_call(data_dir):
+    """
+    """
+    uw0 = UidToWaveform(prefix=str(data_dir))
+    #TODO test gcs load
+    #test uid in cache
+    sample = {'uid': 'harvard', 'path': 'harvard'}
+    wav_sample = uw0(sample)
+    assert 'waveform' in wav_sample
+    assert 'sample_rate' in wav_sample
+    assert 'path' in wav_sample 
+    assert sample['uid'] in uw0.cache
+    cache = uw0.cache[sample['uid']]
+    assert torch.equal(cache['waveform'],wav_sample['waveform'])
+    assert cache['sample_rate'] == wav_sample['sample_rate']
+    assert cache['path'] == wav_sample['path']
+    sample2 = {'uid': 'random', 'path': 'random'}
+    
     with pytest.raises(RuntimeError):
-        utw0 = UidToWaveform(prefix=str_audio_dir, extension=invalid_extension)
-        utw0(sample0)
-
-    #path doesn't exist
-    sample1 = {'uid': 'random'}
-    with pytest.raises(RuntimeError):
-        utw1 = UidToWaveform(prefix=str_audio_dir, extension=extension)
-        utw1(sample1)
-
-    #str path
-    #str path
-    utw2 = UidToWaveform(prefix=str_audio_dir, extension=extension)
-    sample = utw2(sample0)
-    assert sample['sample_rate'] == 44100
-    assert isinstance(sample['waveform'], torch.Tensor)
-
-    #path
-    utw3 = UidToWaveform(prefix=path_audio_dir, extension=extension)
-    utw3(sample0)
-    assert sample['sample_rate'] == 44100
-    assert isinstance(sample['waveform'], torch.Tensor)
+        w = uw0(sample2)
+    

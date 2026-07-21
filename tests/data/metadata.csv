@@ -1,0 +1,8 @@
+uid,speakerID,file_name,task,split,date,session
+000,aaa,harvard,sentence-repetition,train,01-01-2026,1
+001,bbb,harvard,sentence-repetition,val,01-01-2026,1
+002,ccc,harvard,sentence-repetition,val,01-01-2026,1
+003,ddd,harvard,sentence-repetition,test,01-01-2026,1
+004,eee,harvard,sentence-repetition,random,01-01-2026,1
+005,fff,harvard,random,train,01-01-2026,1
+006,ggg,random,sentence-repetition,test,01-01-2026,1

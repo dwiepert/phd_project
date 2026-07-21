@@ -4,10 +4,10 @@ from acm.io._truncate import Truncate
 import torch 
 
 ### TESTS ###
-def test_resample_truncate():
-    str_audio_dir = 'tests/data'
+def test_resample_truncate(data_dir):
+    str_audio_dir = str(data_dir)
     
-    sample = {'uid': 'harvard'}
+    sample = {'uid': 'harvard', 'path': 'harvard'}
     utw = UidToWaveform(str_audio_dir)
     wav_sample = utw(sample)
     len_pre = wav_sample['waveform'].shape[1]

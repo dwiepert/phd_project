@@ -1,0 +1,3 @@
+uid,speakerID,file_name,task,split
+harvard,aaa,harvard,sentence-repetition,train
+random,bbb,random,sentence-repetition,val

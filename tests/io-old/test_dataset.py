@@ -3,7 +3,7 @@ Test CustomDataset
 
 Author(s): Dani Wiepert
 Last modified: 01/2026
-"""
+
 
 #IMPORTS
 ##built-in
@@ -18,11 +18,13 @@ from acm.io import CustomDataset
 
 ### HELPERS ###
 def create_metadata(path, excel=True):
-    data = {'uid': ['000', '001', '003', '004', '005','006', '007'], 
+    data = {'uid': ['000', '001', '002', '003', '004','005', '006'], 
             'speakerID': ['aaa', 'bbb', 'ccc', 'ddd', 'eee','fff', 'ggg'], 
             'file_name': ['harvard', 'harvard', 'harvard', 'harvard', 'harvard', 'harvard', 'random'], 
             'task': ['sentence-repetition','sentence-repetition', 'sentence-repetition', 'sentence-repetition', 'sentence-repetition', 'random', 'sentence-repetition'], 
-            'split': ['train', 'val','val', 'test', 'random', 'train', 'test']}
+            'split': ['train', 'val','val', 'test', 'random', 'train', 'test'],
+            'date': ['01-01-2026','01-01-2026','01-01-2026','01-01-2026','01-01-2026','01-01-2026','01-01-2026'], 
+            'session': [1,1,1,1,1,1,1]}
     
     data_df = pd.DataFrame(data)
     data_df.to_csv(f'{path}.csv', index=False)
@@ -34,7 +36,9 @@ def create_valid_metadata(path, excel=True):
             'speakerID': ['aaa', 'bbb'], 
             'file_name': ['harvard', 'random'], 
             'task': ['sentence-repetition','sentence-repetition'], 
-            'split': ['train', 'val']}
+            'split': ['train', 'val'], 
+            'date': ['01-01-2026', '01-01-2026'],
+            'session': [1,1]}
     
     data_df = pd.DataFrame(data)
     data_df.to_csv(f'{path}.csv', index=False)
@@ -87,15 +91,18 @@ def test_metadata():
 
     with pytest.raises(AssertionError):
         CustomDataset(audio_dir=str_audio_dir, metadata_path=str_metadata_path, uid_col='random')
-    
-    with pytest.raises(AssertionError):
-        CustomDataset(audio_dir=str_audio_dir, metadata_path=str_metadata_path, audio_col='random')
 
     with pytest.raises(AssertionError):
         CustomDataset(audio_dir=str_audio_dir, metadata_path=str_metadata_path, speaker_col='random')
         
     with pytest.raises(AssertionError):
         CustomDataset(audio_dir=str_audio_dir, metadata_path=str_metadata_path, task_col='random')
+
+    with pytest.raises(AssertionError):
+        CustomDataset(audio_dir=str_audio_dir, metadata_path=str_metadata_path, date_col='random')
+
+    with pytest.raises(AssertionError):
+        CustomDataset(audio_dir=str_audio_dir, metadata_path=str_metadata_path, session_col='random')
     
     d0 = CustomDataset(audio_dir=str_audio_dir, metadata_path=str_metadata_path)
     md = d0.get_metadata()
@@ -123,11 +130,22 @@ def test_metadata():
     md2 = md2.drop(columns=['speakerID'])
     with pytest.raises(AssertionError):
         d0.update_metadata(md2)
-    
+
     md3 = md.copy()
-    md3 = md0.drop(columns=['file_name'])
+    md3 = md3.drop(columns=['date'])
     with pytest.raises(AssertionError):
         d0.update_metadata(md3)
+
+    md4 = md.copy()
+    md4 = md4.drop(columns=['session'])
+    with pytest.raises(AssertionError):
+        d0.update_metadata(md4)
+
+    #TODO: test session can't be datetime
+    # md5 = md.copy()
+    # md5 = md5.drop(columns=['session'])
+    # md5['session'] = ['data', 'data', 'data','data','data','data']
+    # d0.update_metadata(md5)
 
     d1 = CustomDataset(audio_dir=str_audio_dir, metadata_path=str_metadata_path, tasks=['random'])
     new_md4 = md[md['task'] != 'random']
@@ -164,4 +182,4 @@ def test_get_item():
 
 def test_split():
     #TODO: TEST SPLIT
-    return
+    return """
