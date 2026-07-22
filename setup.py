@@ -7,8 +7,8 @@ setup(
     author = 'Dani Wiepert',
     python_requires='>=3.10',
     install_requires=[
-        "numpy==2.2.6",
-        "pandas==2.3.3",
+        "numpy==2.5.1",
+        "pandas==3.0.5",
         "torch==2.12.1",
         "torchaudio==2.11.0",
         "torchvision==0.27.1", 
