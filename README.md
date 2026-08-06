@@ -44,3 +44,6 @@ The model needs to be UT IP. Only thing I'm not sure about is who on the mayo si
 IDEA:
 make a transform that transforms into EMA and saves the output somewhere if specified OR loads EMA if it already exists
 make a test to see how long it takes to transform into EMA without a gpu/if that is even possible
+
+
+$WORK/miniforge3/condabin/conda - conda path

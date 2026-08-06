@@ -109,7 +109,7 @@ if __name__ == "__main__":
         loader = DataLoader(dataset=audio_dataset,batch_size=args.batch_sz,shuffle=False,collate_fn=collate_fn, num_workers=args.num_workers)
         w = SPARCWrapper(args.device, args.print, True)
         print('EMA encoding ...')
-        w.encode_all(loader)
+        w.encode_all(loader, debug=args.debug)
 
     else:
         if args.split:

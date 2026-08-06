@@ -47,12 +47,16 @@ class SPARCWrapper():
         wavs = wavs.to(self.device)
         return wavs
     
-    def encode_all(self, loader) -> dict:
+    def encode_all(self, loader, debug=False) -> dict:
         """
         """
+        counter = 0
+
         for data in tqdm(loader):
             self.encode(data)
-            print('pause')
+            counter += 1
+            if counter == 2:
+                break
 
     def encode(self, batch:dict) -> dict:
         """

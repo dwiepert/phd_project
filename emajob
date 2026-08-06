@@ -1,0 +1,22 @@
+#!/bin/bash
+# Job name:
+#SBATCH -J ema_extraction
+#
+# File where job progress and standard output is written
+#SBATCH -o $WORK/job_output/ema.out
+#
+# File where job errors are written
+#SBATCH -e $WORK/job_output/ema.err      
+#
+# Request only one node:
+#SBATCH -n 1
+#
+# Wall clock limit: HH:MM:SS. Max is 48 hours on most nodes
+#SBATCH -t 10:00:00
+#
+## Command(s) to run
+eval "$(conda shell.bash hook)"
+conda activate acmv1
+
+$WORK/miniforge3/condabin/conda
+python scripts/my_program.py 
