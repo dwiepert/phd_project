@@ -19,4 +19,5 @@ eval "$(conda shell.bash hook)"
 conda activate acmv1
 
 $WORK/miniforge3/condabin/conda
-python scripts/my_program.py 
+python $WORK/phd_project/run.py --audio_dir=$WORK/Downsampled/Train --metadata_path=$WORK/Downsampled/Train/metadata.csv --split=speaker+diagnosis --ema_only --debug
+

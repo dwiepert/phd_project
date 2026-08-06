@@ -86,31 +86,42 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     args.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    if torch.cuda.is_available():
+        print(f'Device: {torch.cuda.get_device_name(0)}')
+    else:
+        print('Using CPU..')
 
     #GCS Config
     if args.bucket_name:
         gcs_args = zip_gcs_config(args)
         gcs_config = GCSConfig(**gcs_args)
+        print('Using GCS bucket...')
     else:
         gcs_config=None
+        print('Not using GCS bucket...')
 
     #Audio Config
     ac_args = zip_audio_config(args)
     ac = AudioConfig(gcs_config=gcs_config, **ac_args)
+    print('AudioConfig created...')
 
     #Metadata Config
     mc_args = zip_metadata_config(args)
     mc = MetadataConfig(**mc_args)
+    print('MetadataConfig created...')
 
     #initial dataset
     audio_dataset = AudioDataset(audio_config=ac, metadata_config=mc, dataset_name=args.dataset_name)
+    print('AudioDataset created...')
 
     if args.ema_only: 
         loader = DataLoader(dataset=audio_dataset,batch_size=args.batch_sz,shuffle=False,collate_fn=collate_fn, num_workers=args.num_workers)
+        print('DataLoader created...')
         w = SPARCWrapper(args.device, args.print, True)
-        print('EMA encoding ...')
+        print('SPARCWrapper created...')
+        print('EMA encoding started...')
         w.encode_all(loader, debug=args.debug)
-
+    
     else:
         if args.split:
             if args.split == "file":

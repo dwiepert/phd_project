@@ -55,7 +55,7 @@ class SPARCWrapper():
         for data in tqdm(loader):
             self.encode(data)
             counter += 1
-            if counter == 2:
+            if counter == 1:
                 break
 
     def encode(self, batch:dict) -> dict:
