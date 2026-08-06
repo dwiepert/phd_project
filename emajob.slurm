@@ -12,12 +12,11 @@
 #SBATCH -n 1
 #
 # Wall clock limit: HH:MM:SS. Max is 48 hours on most nodes
-#SBATCH -t 10:00:00
+#SBATCH -t 00:30:00
 #
 ## Command(s) to run
-eval "$(conda shell.bash hook)"
+source $WORK/miniforge3/condabin/conda
 conda activate acmv1
 
-$WORK/miniforge3/condabin/conda
 python $WORK/phd_project/run.py --audio_dir=$WORK/Downsampled/Train --metadata_path=$WORK/Downsampled/Train/metadata.csv --split=speaker+diagnosis --ema_only --debug
 
