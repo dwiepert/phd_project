@@ -3,10 +3,10 @@
 #SBATCH -J ema_extraction
 #
 # File where job progress and standard output is written
-#SBATCH -o $WORK/job_output/ema.out
+#SBATCH -o job_output/ema.o%j
 #
 # File where job errors are written
-#SBATCH -e $WORK/job_output/ema.err      
+#SBATCH -e job_output/ema.err      
 #
 # Request only one node:
 #SBATCH -n 1
@@ -14,9 +14,11 @@
 # Wall clock limit: HH:MM:SS. Max is 48 hours on most nodes
 #SBATCH -t 00:30:00
 #
+#queue name
+#SBATCH -p gg
 ## Command(s) to run
-source $WORK/miniforge3/condabin/conda
+source miniforge3/condabin/conda
 conda activate acmv1
 
-python $WORK/phd_project/run.py --audio_dir=$WORK/Downsampled/Train --metadata_path=$WORK/Downsampled/Train/metadata.csv --split=speaker+diagnosis --ema_only --debug
+python phd_project/run.py --audio_dir=Downsampled/Train --metadata_path=Downsampled/Train/metadata.csv --split=speaker+diagnosis --ema_only --debug
 
