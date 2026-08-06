@@ -91,7 +91,7 @@ class MetadataConfig():
             assert self.task_col in self.metadata, f'Given task column not in metadata. Please check that the correct task_col is specified: {self.task_col}'
         if self.date_col:
             assert self.date_col in self.metadata, f'Given date column not in metadata. Please check that the correct date_col is specified: {self.date_col}'
-            self.metadata.loc[:,self.date_col] = pd.to_datetime(self.metadata[self.date_col], format='mixed')
+            self.metadata[self.date_col] = pd.to_datetime(self.metadata[self.date_col], format='mixed')
         if self.session_col:
             assert self.session_col in self.metadata, f'Given session column not in metadata. Please check that the correct session_col is specified: {self.session_col}'
         if self.diagnosis_col:
