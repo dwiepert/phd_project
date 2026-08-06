@@ -9,7 +9,7 @@
 #SBATCH -e job_output/ema.err      
 #
 # Request only one node:
-#SBATCH -n 1
+#SBATCH -N 1
 #
 # Wall clock limit: HH:MM:SS. Max is 48 hours on most nodes
 #SBATCH -t 00:30:00
