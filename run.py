@@ -117,11 +117,12 @@ if __name__ == "__main__":
     if args.ema_only: 
         loader = DataLoader(dataset=audio_dataset,batch_size=args.batch_sz,shuffle=False,collate_fn=collate_fn, num_workers=args.num_workers)
         print('DataLoader created...')
-        w = SPARCWrapper(args.device, args.print, True)
+        w = SPARCWrapper(args.device, args.print, save_it=True)
         print('SPARCWrapper created...')
         print('EMA encoding started...')
         w.encode_all(loader, debug=args.debug)
-    
+        print('EMA encoding finished')
+
     else:
         if args.split:
             if args.split == "file":

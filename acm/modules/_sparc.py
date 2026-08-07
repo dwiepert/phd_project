@@ -33,6 +33,7 @@ class SPARCWrapper():
         self.device = device
         self.print_it = print_it
         self.save_it = save_it
+        print('Saving ema output...')
 
     def _sparc_processing(self, wavs:List[torch.tensor]) -> SpeechWave:
         """
@@ -122,6 +123,7 @@ class SPARCWrapper():
          
             with open(str(new_path), "w") as f:
                 json.dump(sub_json, f, indent=4)
+            print(f'Saved to {new_path}...')
             
     def _serialize_output(self, o: dict) -> dict:
         """
