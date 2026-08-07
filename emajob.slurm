@@ -12,11 +12,11 @@
 #SBATCH -N 1
 #
 # Wall clock limit: HH:MM:SS. Max is 48 hours on most nodes
-#SBATCH -t 00:30:00
+#SBATCH -t 24:00:00
 #
 #queue name
 #SBATCH -p gg
 ## Command(s) to run
 eval "$(conda shell.bash hook)"
 conda activate acmv1
-python phd_project/run.py --audio_dir=Downsampled/Train --metadata_path=Downsampled/Train/metadata.csv --split=speaker+diagnosis --ema_only --debug
+python phd_project/run.py --audio_dir=Downsampled/Train --metadata_path=Downsampled/Train/metadata.csv --split=speaker+diagnosis --ema_only
