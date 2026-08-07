@@ -17,8 +17,6 @@
 #queue name
 #SBATCH -p gg
 ## Command(s) to run
-eval "$(conda shell.bash hook)
+eval "$(conda shell.bash hook)"
 conda activate acmv1
-
 python phd_project/run.py --audio_dir=Downsampled/Train --metadata_path=Downsampled/Train/metadata.csv --split=speaker+diagnosis --ema_only --debug
-
