@@ -6,7 +6,7 @@
 #SBATCH -o job_output/ema.o%j
 #
 # File where job errors are written
-#SBATCH -e job_output/ema.err      
+#SBATCH -e job_output/ema.e%j     
 #
 # Request only one node:
 #SBATCH -N 1
