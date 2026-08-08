@@ -59,6 +59,7 @@ if __name__ == "__main__":
     #PATHS
     parser.add_argument("--audio_dir", type=Path, help="Path to audio files.")
     parser.add_argument("--metadata_path", type=Path, help="Path to metadata csv.")
+    parser.add_argument("--output_dir", type=Path, help="Path to save output")
     parser.add_argument("--ema_only", action="store_true")
     #AUDIO ARGS
     parser.add_argument("--audio_ext", type=str, default='wav', help="Audio type. Default = wav.")
@@ -117,7 +118,7 @@ if __name__ == "__main__":
     if args.ema_only: 
         loader = DataLoader(dataset=audio_dataset,batch_size=args.batch_sz,shuffle=False,collate_fn=collate_fn, num_workers=args.num_workers)
         print('DataLoader created...')
-        w = SPARCWrapper(args.device, args.print, save_it=True)
+        w = SPARCWrapper(output_dir=args.output_dir, device=args.device,print_it=args.print, save_it=True)
         print('SPARCWrapper created...')
         print('EMA encoding started...')
         w.encode_all(loader, debug=args.debug)

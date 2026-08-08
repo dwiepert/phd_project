@@ -6,7 +6,7 @@
 from pathlib import Path
 from collections import defaultdict
 import json
-from typing import List 
+from typing import List, Union 
 import time
 
 ##third-party
@@ -23,8 +23,10 @@ class SPARCWrapper():
     checkpoints: en, multi, en+
     device: cpu, cuda:0
     """
-    def __init__(self, device=torch.device("cuda" if torch.cuda.is_available() else "cpu"), print_it:bool=True, save_it:bool=True): #checkpoint:str="en", device:str="cpu"):
+    def __init__(self, output_dir:Union[str,Path], device=torch.device("cuda" if torch.cuda.is_available() else "cpu"), 
+                       print_it:bool=True, save_it:bool=True): #checkpoint:str="en", device:str="cpu"):
         super(SPARCWrapper, self).__init__()
+        self.output_dir = Path(output_dir)
         if torch.cuda.is_available():
             d = "cuda:0"
         else:
@@ -100,7 +102,8 @@ class SPARCWrapper():
         parent_dirs = batch['parent_dir']
         output = []
         for i in range(len(paths)):
-            new_path = parent_dirs[i] / Path(paths[i] + "_ema.json")
+            #new_path = parent_dirs[i] / Path(paths[i] + "_ema.json")
+            new_path = self.output_dir / Path(paths[i] + "_ema.json")
             if not new_path.exists():
                 return None 
             else:
@@ -118,7 +121,9 @@ class SPARCWrapper():
         parent_dirs = batch['parent_dir']
         for i in range(len(paths)):
             o = output[i]
-            new_path = parent_dirs[i] / Path(paths[i] + "_ema.json")
+            #new_path = parent_dirs[i] / Path(paths[i] + "_ema.json")
+            new_path = self.output_dir / Path(paths[i] + "_ema.json")
+            new_path.mkdir(parents=True, exist_ok=True)
             sub_json = self._serialize_output(o)
          
             with open(str(new_path), "w") as f:
