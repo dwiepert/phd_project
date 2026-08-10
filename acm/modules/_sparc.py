@@ -123,7 +123,7 @@ class SPARCWrapper():
             o = output[i]
             #new_path = parent_dirs[i] / Path(paths[i] + "_ema.json")
             new_path = self.output_dir / Path(paths[i] + "_ema.json")
-            new_path.mkdir(parents=True, exist_ok=True)
+            new_path.parent.mkdir(parents=True, exist_ok=True)
             sub_json = self._serialize_output(o)
          
             with open(str(new_path), "w") as f:
