@@ -12,7 +12,7 @@
 #SBATCH -N 1
 #
 # Wall clock limit: HH:MM:SS. Max is 48 hours on most nodes
-#SBATCH -t 24:00:00
+#SBATCH -t 48:00:00
 #
 #queue name
 #SBATCH -p gg
