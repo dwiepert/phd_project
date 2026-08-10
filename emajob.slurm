@@ -15,7 +15,7 @@
 #SBATCH -t 48:00:00
 #
 #queue name
-#SBATCH -p gg
+#SBATCH -p gh
 ## Command(s) to run
 eval "$(conda shell.bash hook)"
 conda activate acmv1
