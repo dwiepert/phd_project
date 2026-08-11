@@ -35,7 +35,7 @@ class SPARCWrapper():
         self.device = device
         self.print_it = print_it
         self.save_it = save_it
-        print('Saving ema output...')
+        #print('Saving ema output...')
 
     def _sparc_processing(self, wavs:List[torch.tensor]) -> SpeechWave:
         """
@@ -66,21 +66,26 @@ class SPARCWrapper():
         """
         output = self._load_ema(batch)
         if output is None:
-            if self.print_it:
-                print(f'Audio 0 length: {batch['waveform'][0].shape[1] / batch['sample_rate'][0]} s')
-            t1 = time.time()
-            input = self._sparc_processing(batch['waveform'])
-            t2 = time.time()
-            if self.print_it:
-                print(f'SPARC processing time: {t2-t1}')
-            output = self.coder.encode(input)
-            if not isinstance(output, list): 
-                output = [output]
-            t3 = time.time()
-            if self.print_it:
-                print(f'SPARC encoding time: {t3-t2}')
-            if self.save_it:
-                self._save_ema(batch, output)
+            if batch['waveform'][0] is not None:
+                if self.print_it:
+                    print(f'Audio 0 length: {batch['waveform'][0].shape[1] / batch['sample_rate'][0]} s')
+                t1 = time.time()
+                input = self._sparc_processing(batch['waveform'])
+                t2 = time.time()
+                if self.print_it:
+                    print(f'SPARC processing time: {t2-t1}')
+                output = self.coder.encode(input)
+                if not isinstance(output, list): 
+                    output = [output]
+                t3 = time.time()
+                if self.print_it:
+                    print(f'SPARC encoding time: {t3-t2}')
+                if self.save_it:
+                    self._save_ema(batch, output)
+            else:
+                paths = batch['path']
+                print(f'Skipping current batch: {paths}')
+                return None
         
         output = self._convert_output(output)
 
@@ -128,7 +133,7 @@ class SPARCWrapper():
          
             with open(str(new_path), "w") as f:
                 json.dump(sub_json, f, indent=4)
-            print(f'Saved to {new_path}...')
+            #print(f'Saved to {new_path}...')
             
     def _serialize_output(self, o: dict) -> dict:
         """

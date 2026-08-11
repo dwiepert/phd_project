@@ -46,4 +46,8 @@ make a transform that transforms into EMA and saves the output somewhere if spec
 make a test to see how long it takes to transform into EMA without a gpu/if that is even possible
 
 
-$WORK/miniforge3/condabin/conda - conda path
+
+#TODO:
+check if batch is None 
+have a way to remove files/skip files from loader if they can't be loaded? more efficiently?
+line 69 in sparc processing only checks if first item in batch is none - means that there will be issues if batch size is greater than 1!

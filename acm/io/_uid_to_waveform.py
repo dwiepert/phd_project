@@ -67,9 +67,14 @@ class UidToWaveform(object):
         uid = wavsample['uid']
         cache = {}
         if uid not in self.cache:
-            wav, sr = self._load_waveform(sub_path)
-            cache['waveform'] = wav 
-            cache['sample_rate'] = sr
+            try:
+                wav, sr = self._load_waveform(sub_path)
+                cache['waveform'] = wav 
+                cache['sample_rate'] = sr
+            except:
+                print(f'Unable to load {str(sub_path)}')
+                cache['waveform'] = None
+                cache['sample_rate'] = None
             cache['path'] = sub_path
             self.cache[uid] = cache
             
