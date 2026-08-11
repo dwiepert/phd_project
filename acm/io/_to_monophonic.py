@@ -29,13 +29,14 @@ class ToMonophonic(object):
         
         waveform = monosample['waveform']
         #print(waveform.shape)
-        waveform_mono = self.reduce_fn(waveform)
-        #print(waveform_mono)
-        #print(waveform_mono.shape)
-        
-        if waveform_mono.shape != torch.Size([1, waveform.shape[1]]):
-            raise ValueError(f'Result of reduce_fn wrong shape, expected [1, {waveform.shape[1]}], got [{waveform_mono.shape[0], waveform_mono.shape[1]}]')
+        if waveform is not None:
+            waveform_mono = self.reduce_fn(waveform)
+            #print(waveform_mono)
+            #print(waveform_mono.shape)
             
-        monosample['waveform'] = waveform_mono
+            if waveform_mono.shape != torch.Size([1, waveform.shape[1]]):
+                raise ValueError(f'Result of reduce_fn wrong shape, expected [1, {waveform.shape[1]}], got [{waveform_mono.shape[0], waveform_mono.shape[1]}]')
+                
+            monosample['waveform'] = waveform_mono
             
         return monosample

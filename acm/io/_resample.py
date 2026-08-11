@@ -25,10 +25,11 @@ class ResampleAudio(object):
         """
         resampled = sample.copy()    
         waveform, sample_rate = resampled['waveform'], resampled['sample_rate']
-        if sample_rate != self.resample_rate:
-            transform = torchaudio.transforms.Resample(sample_rate, self.resample_rate)
-            new_waveform = transform(waveform)
-            resampled['waveform'] = new_waveform
-            resampled['sample_rate'] = self.resample_rate
+        if waveform is not None:
+            if sample_rate != self.resample_rate:
+                transform = torchaudio.transforms.Resample(sample_rate, self.resample_rate)
+                new_waveform = transform(waveform)
+                resampled['waveform'] = new_waveform
+                resampled['sample_rate'] = self.resample_rate
         
         return resampled
