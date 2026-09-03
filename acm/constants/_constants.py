@@ -27,8 +27,8 @@ _DATASET_PARAMS = {'SpeechAccessibility_2026-04-08': {'params': {'uid_col': 'uid
                                                'file_col': None,
                                                'session_col':None,
                                                'date_col': None,
-                                               'task_col': 'task',
-                                               'tasks': ['sentence-reading']}},
+                                               'task_col': None,
+                                               'tasks': None}},
 
                     'MayoDataset':  {'params': {'uid_col': 'uid',
                                                 'speaker_col':'speakerID',
