@@ -19,4 +19,4 @@
 ## Command(s) to run
 eval "$(conda shell.bash hook)"
 conda activate acmv1
-python phd_project/run.py --audio_dir=Downsampled/Train --metadata_path=Downsampled/Train/metadata.csv --output_dir=ema_uiuc/Train --split=speaker+diagnosis --ema_only
+python phd_project/run.py --audio_dir=mocha_timit_audio --metadata_path=mocha_timit_audio/metadata.csv --output_dir=ema_mocha-timit/ --split=speaker --ema_only --dataset_name=mocha-timit
