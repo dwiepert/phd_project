@@ -51,3 +51,6 @@ make a test to see how long it takes to transform into EMA without a gpu/if that
 check if batch is None 
 have a way to remove files/skip files from loader if they can't be loaded? more efficiently?
 line 69 in sparc processing only checks if first item in batch is none - means that there will be issues if batch size is greater than 1!
+
+#will need this
+https://github.com/jaekookang/Python-EMA-Viewer

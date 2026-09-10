@@ -30,6 +30,22 @@ _DATASET_PARAMS = {'SpeechAccessibility_2026-04-08': {'params': {'uid_col': 'uid
                                                'task_col': None,
                                                'tasks': None}},
 
+                    'als': {'params': {'uid_col': 'uid',
+                                               'speaker_col': 'speaker_id', 
+                                               'file_col': None,
+                                               'session_col':None,
+                                               'date_col': None,
+                                               'task_col': None,
+                                               'tasks': None}},
+
+                    'torgo': {'params': {'uid_col': 'uid',
+                                        'speaker_col': 'speaker', 
+                                        'file_col': None,
+                                        'session_col':'session',
+                                        'date_col': None,
+                                        'task_col': None,
+                                        'tasks': None}},       
+
                     'MayoDataset':  {'params': {'uid_col': 'uid',
                                                 'speaker_col':'speakerID',
                                                 'file_col': 'file_name',

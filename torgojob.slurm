@@ -19,4 +19,4 @@
 ## Command(s) to run
 eval "$(conda shell.bash hook)"
 conda activate acmv1
-python phd_project/run.py --audio_dir=als_phrases --metadata_path=als_phrases/metadata.csv --output_dir=ema_als_phrases/ --split=speaker --ema_only --dataset_name=als
+python phd_project/run.py --audio_dir=torgo_audio --metadata_path=torgo_audio/metadata.csv --output_dir=ema_torgo/ --split=speaker --ema_only --dataset_name=torgo
