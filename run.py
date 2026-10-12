@@ -18,7 +18,7 @@ from torch.utils.data import DataLoader
 from acm.dataset import *
 from acm.io import *
 from acm.constants import *
-from acm.modules import SPARCWrapper
+from acm.modules import SPARC
 
 def zip_gcs_config(args:argparse.Namespace):
     """
@@ -47,11 +47,14 @@ def zip_metadata_config(args:argparse.Namespace):
     params = _DATASET_PARAMS[args.dataset_name]['params']
     metadata_args = metadata_args | params
 
-    assert set(args.tasks).issubset(_DATASET_PARAMS[args.dataset_name]['tasks'])
-    metadata_args['tasks'] = args.tasks
+    #TODO: undo later
+    if _DATASET_PARAMS[args.dataset_name]['tasks']:
+        assert set(args.tasks).issubset(_DATASET_PARAMS[args.dataset_name]['tasks'])
+        metadata_args['tasks'] = args.tasks
 
-    assert set(args.diagnoses).issubset(_DATASET_PARAMS[args.dataset_name]['diagnoses'])
-    metadata_args['diagnoses'] = args.diagnoses
+    if _DATASET_PARAMS[args.dataset_name]['diagnoses']:
+        assert set(args.diagnoses).issubset(_DATASET_PARAMS[args.dataset_name]['diagnoses'])
+        metadata_args['diagnoses'] = args.diagnoses
     return metadata_args
 
 if __name__ == "__main__":
@@ -59,7 +62,7 @@ if __name__ == "__main__":
     #PATHS
     parser.add_argument("--audio_dir", type=Path, help="Path to audio files.")
     parser.add_argument("--metadata_path", type=Path, help="Path to metadata csv.")
-    parser.add_argument("--output_dir", type=Path, help="Path to save output")
+    parser.add_argument("--ema_dir", type=Path, help="Path to load/save ema output")
     parser.add_argument("--ema_only", action="store_true")
     #AUDIO ARGS
     parser.add_argument("--audio_ext", type=str, default='wav', help="Audio type. Default = wav.")
@@ -112,19 +115,20 @@ if __name__ == "__main__":
     print('MetadataConfig created...')
 
     #initial dataset
-    audio_dataset = AudioDataset(audio_config=ac, metadata_config=mc, dataset_name=args.dataset_name)
+    audio_dataset = AudioDataset(audio_config=ac, metadata_config=mc, dataset_name=args.dataset_name, ema_directory=args.ema_dir)
     print('AudioDataset created...')
 
-    if args.ema_only: 
+    #LOAD/ENCODE EMA
+    if args.ema_only:
         loader = DataLoader(dataset=audio_dataset,batch_size=args.batch_sz,shuffle=False,collate_fn=collate_fn, num_workers=args.num_workers)
         print('DataLoader created...')
-        w = SPARCWrapper(output_dir=args.output_dir, device=args.device,print_it=args.print, save_it=True)
-        print('SPARCWrapper created...')
+        w = SPARC(output_dir=args.ema_dir, device=args.device,print_it=args.print, save_it=True)
+        print('SPARC Wrapper created...')
         print('EMA encoding started...')
         w.encode_all(loader, debug=args.debug)
         print('EMA encoding finished')
 
-    else:
+    if not args.ema_only:
         if args.split:
             if args.split == "file":
                 train, val, test = AudioDataset.split_by_file(audio_dataset, args.train_proportion, args.val_proportion, args.seed)
@@ -147,6 +151,10 @@ if __name__ == "__main__":
                 val_loader = DataLoader(dataset=val,batch_size=args.batch_sz,shuffle=False,collate_fn=collate_fn, num_workers=args.num_workers)
             if test:
                 test_loader = DataLoader(dataset=test,batch_size=args.batch_sz,shuffle=False,collate_fn=collate_fn, num_workers=args.num_workers)
+
+            #TODO: make code that runs/decodes/evaluates whatever loop you need. 
+
+    #DECODE EMA
 
     #     #TODO: test loader works for different batch sizes
     #     batch = next(iter(train_loader))

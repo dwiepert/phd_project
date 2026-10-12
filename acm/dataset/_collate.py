@@ -20,5 +20,9 @@ def collate_fn(batch: List[dict]) -> dict:
     waveform = [item['waveform'] for item in batch]
     sample = {'uid':uid, 'path':path, 'parent_dir':parent_dir, 'sample_rate':sr, 'waveform':waveform}
 
+    if 'ema_dir' in batch[0]:
+        ema_dir = [item['ema_dir'] for item in batch]
+        sample['ema_dir'] = ema_dir
+
     return sample
 

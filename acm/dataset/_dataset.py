@@ -28,11 +28,14 @@ class AudioDataset(Dataset):
     def __init__(self, 
                  audio_config:AudioConfig,
                  metadata_config:MetadataConfig,
-                 dataset_name:str):
+                 dataset_name:str,
+                 ema_directory:Union[str, Path]):
         '''
         Initialize AudioDataset
         :param audio_config: AudioConfig object with parameters necessary for loading and transforming audio
         :param metadata_config: MetadataConfig object with parameters necessary for interacting with metadata dataframe
+        :param ema_directory: Union[str, Path]
+        :param dataset_name: str, dataset name
         :param target_col:str, target column in metadata (default = None, sets to task column)
         :param target_labels: List of str, target labels to select from metadata, (default = ['sentence-repetition'])
         '''
@@ -42,6 +45,8 @@ class AudioDataset(Dataset):
         self.metadata_config = metadata_config
         self.metadata = self.metadata_config.metadata.copy()
         self.dataset_name = dataset_name
+        self.ema_directory = ema_directory
+        if self.ema_directory: self.ema_directory = Path(self.ema_directory)
 
     def get_metadata(self) -> pd.DataFrame:
         """
@@ -49,6 +54,12 @@ class AudioDataset(Dataset):
         :return self.metadata: pd.DataFrame
         """
         return self.metadata
+
+    def set_ema_dir(self, ema_dir=Union[str, Path]):
+        """
+        TODO
+        """
+        self.ema_directory = Path(ema_dir)
     
     def __len__(self) -> int:
         '''
@@ -75,6 +86,9 @@ class AudioDataset(Dataset):
             'parent_dir': self.audio_config.audio_dir
         }
 
+        if self.ema_directory:
+            sample['ema_dir'] = self.ema_directory
+
         return sample
     
     def _get_sa_item(self, idx) -> dict:
@@ -91,6 +105,9 @@ class AudioDataset(Dataset):
             'path' : str(Path(speaker_id) / uid),
             'parent_dir': self.audio_config.audio_dir
         }
+
+        if self.ema_directory:
+                    sample['ema_dir'] = self.ema_directory
 
         return sample
     
@@ -130,7 +147,7 @@ class AudioDataset(Dataset):
         return train_sz, val_sz, test_sz 
     
     @staticmethod
-    def _new_dataset(sz:int, md:pd.DataFrame, mdc:MetadataConfig, ac:AudioConfig, dn:str) -> AudioDataset: 
+    def _new_dataset(sz:int, md:pd.DataFrame, mdc:MetadataConfig, ac:AudioConfig, dn:str, ed:Union[str, Path]) -> AudioDataset: 
         """
         Create a new dataset object
         
@@ -139,12 +156,14 @@ class AudioDataset(Dataset):
         :param mdc: MetadataConfig, metadata config to update
         :param ac: AudioConfig
         :param dn: str, dataset name
+        :param ed: union[str, path], ema dir
         :return ds: AudioDataset, new audio dataset (none if sz == 0)
+    
         """
         if sz > 0:
             new_config = mdc
             new_config.update_metadata(md)
-            ds = AudioDataset(ac, new_config, dn)
+            ds = AudioDataset(ac, new_config, dn, ed)
         else:
             ds = None
         return ds
@@ -170,9 +189,9 @@ class AudioDataset(Dataset):
         val_md = rem.sample(val_sz, random_state=seed)
         test_md = rem.drop(val_md.index)
 
-        train_ds = cls._new_dataset(train_sz, train_md, cls.metadata_config, cls.audio_config, cls.dataset_name)
-        val_ds = cls._new_dataset(val_sz, val_md, cls.metadata_config, cls.audio_config, cls.dataset_name)
-        test_ds = cls._new_dataset(test_sz, test_md, cls.metadata_config, cls.audio_config, cls.dataset_name)
+        train_ds = cls._new_dataset(train_sz, train_md, cls.metadata_config, cls.audio_config, cls.dataset_name, cls.ema_directory)
+        val_ds = cls._new_dataset(val_sz, val_md, cls.metadata_config, cls.audio_config, cls.dataset_name, cls.ema_directory)
+        test_ds = cls._new_dataset(test_sz, test_md, cls.metadata_config, cls.audio_config, cls.dataset_name, cls.ema_directory)
 
         return train_ds, val_ds, test_ds
 
@@ -217,9 +236,9 @@ class AudioDataset(Dataset):
         val_md = cls._get_speakers(speakers, train_sz, train_sz+val_sz, all_md, speaker_col)
         test_md = cls._get_speakers(speakers, train_sz+val_sz, len(speakers), all_md, speaker_col)
        
-        train_ds = cls._new_dataset(train_sz, train_md, cls.metadata_config, cls.audio_config, cls.dataset_name)
-        val_ds = cls._new_dataset(val_sz, val_md, cls.metadata_config, cls.audio_config, cls.dataset_name)
-        test_ds = cls._new_dataset(test_sz, test_md, cls.metadata_config, cls.audio_config, cls.dataset_name)
+        train_ds = cls._new_dataset(train_sz, train_md, cls.metadata_config, cls.audio_config, cls.dataset_name, cls.ema_directory)
+        val_ds = cls._new_dataset(val_sz, val_md, cls.metadata_config, cls.audio_config, cls.dataset_name, cls.ema_directory)
+        test_ds = cls._new_dataset(test_sz, test_md, cls.metadata_config, cls.audio_config, cls.dataset_name, cls.ema_directory)
 
         return train_ds, val_ds, test_ds
     
@@ -263,8 +282,8 @@ class AudioDataset(Dataset):
         train_md = pd.concat(train_mds)
         val_md = pd.concat(val_mds)
         test_md = pd.concat(test_mds)
-        train_ds = cls._new_dataset(100*train, train_md, cls.metadata_config, cls.audio_config, cls.dataset_name)
-        val_ds = cls._new_dataset(100*val, val_md, cls.metadata_config, cls.audio_config, cls.dataset_name)
-        test_ds = cls._new_dataset(100-train-val, test_md, cls.metadata_config, cls.audio_config, cls.dataset_name)
+        train_ds = cls._new_dataset(100*train, train_md, cls.metadata_config, cls.audio_config, cls.dataset_name, cls.ema_directory)
+        val_ds = cls._new_dataset(100*val, val_md, cls.metadata_config, cls.audio_config, cls.dataset_name, cls.ema_directory)
+        test_ds = cls._new_dataset(100-train-val, test_md, cls.metadata_config, cls.audio_config, cls.dataset_name, cls.ema_directory)
 
         return train_ds, val_ds, test_ds

@@ -1,6 +1,9 @@
-from ._constants import _AUDIO_TYPES, _DATASET_PARAMS, _DATASETS
+from ._constants import _AUDIO_TYPES, _DATASET_PARAMS, _DATASETS, _SPARC_SENSORS, _WAVLM_STRIDES, _WAVLM_HOP
 __all__ = [
     '_AUDIO_TYPES',
     '_DATASET_PARAMS',
-    '_DATASETS'
+    '_DATASETS',
+    '_WAVLM_STRIDES',
+    '_SPARC_SENSORS',
+    '_WAVLM_HOP'
 ]

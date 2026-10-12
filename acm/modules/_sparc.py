@@ -14,18 +14,20 @@ import torch
 from torch.utils.data import DataLoader
 import numpy as np
 from tqdm import tqdm
+import pandas as pd
 
 ##local
 from sparc import load_model, SpeechWave
+from acm.constants import _SPARC_SENSORS
 
-class SPARCWrapper():
+class SPARC():
     """
     checkpoints: en, multi, en+
     device: cpu, cuda:0
     """
     def __init__(self, output_dir:Union[str,Path], device=torch.device("cuda" if torch.cuda.is_available() else "cpu"), 
                        print_it:bool=True, save_it:bool=True): #checkpoint:str="en", device:str="cpu"):
-        super(SPARCWrapper, self).__init__()
+        super(SPARC, self).__init__()
         self.output_dir = Path(output_dir)
         if torch.cuda.is_available():
             d = "cuda:0"
@@ -55,16 +57,19 @@ class SPARCWrapper():
         """
         counter = 0
 
+        new_data = []
         for data in tqdm(loader):
-            self.encode(data)
+            batch = self.encode(data)
             counter += 1
+            new_data.append(batch)
             if counter == 1 and debug:
                 break
+        return new_data
 
     def encode(self, batch:dict) -> dict:
         """
         """
-        output = self._load_ema(batch)
+        output = self._load_ema_batch(batch)
         if output is None:
             if batch['waveform'][0] is not None:
                 if self.print_it:
@@ -99,35 +104,67 @@ class SPARCWrapper():
             batch[k] = output_dict[k]
         return batch
 
-    def _load_ema(self, batch:dict) -> dict:
+    def get_name(self, path):
+        n = path.stem.split("_")
+        return "_".join(n[:-1])
+    
+    def get_speaker(self, path):
+        return None 
+
+    def get_session(self, path):
+        return None 
+    
+    def load_ema(self, path:Union[str, Path]):
+        """
+        """
+        with open(str(path), "r") as f:
+            dict = json.load(f)
+
+        return self._unserialize_output(dict)
+    
+    def to_df(self, dict):
+        ema = np.array(dict['ema'])
+        new_dict = {}
+        for i in range(len(_SPARC_SENSORS)):
+            new_dict[_SPARC_SENSORS[i]] = ema[:,i]
+
+        df = pd.DataFrame(new_dict)
+        return df
+    
+    def clean_ema(self, df):
+        return df
+
+    def _load_ema_batch(self, batch:dict) -> dict:
         """
         """
         #check if an _ema.json exists for ALL files in a batch, if not, redoes the whole batch
         paths = batch['path']
-        parent_dirs = batch['parent_dir']
+        if 'ema_dir' in batch:
+            parent_dirs = batch['ema_dir']
+        else:
+            parent_dirs = batch['parent_dir']
         output = []
         for i in range(len(paths)):
-            #new_path = parent_dirs[i] / Path(paths[i] + "_ema.json")
-            new_path = self.output_dir / Path(paths[i] + "_ema.json")
+            new_path = parent_dirs[i] / Path(paths[i] + "_ema.json")
+            #new_path = self.output_dir / Path(paths[i] + "_ema.json")
             if not new_path.exists():
                 return None 
             else:
-                with open(str(new_path), "r") as f:
-                    dict = json.load(f)
-                
-                output.append(self._unserialize_output(dict))
-    
+                output.append(self.load_ema(new_path))
         return output
 
     def _save_ema(self, batch:dict, output:dict) -> None:
         """
         """
         paths = batch['path']
-        parent_dirs = batch['parent_dir']
+        if 'ema_dir' in batch:
+            parent_dirs = batch['ema_dir']
+        else:
+            parent_dirs = batch['parent_dir']
         for i in range(len(paths)):
             o = output[i]
-            #new_path = parent_dirs[i] / Path(paths[i] + "_ema.json")
-            new_path = self.output_dir / Path(paths[i] + "_ema.json")
+            new_path = parent_dirs[i] / Path(paths[i] + "_ema.json")
+            #new_path = self.output_dir / Path(paths[i] + "_ema.json")
             new_path.parent.mkdir(parents=True, exist_ok=True)
             sub_json = self._serialize_output(o)
          
@@ -157,6 +194,16 @@ class SPARCWrapper():
                 new_output[k] = o[k]
         return new_output
 
+    # def _convert_to_df(self, o:dict) -> pd.DataFrame:
+    #     """
+    #     """
+    #     new_dict = {}
+    #     sparc_ema = o['ema'].numpy()
+    #     for i in range(len(_SPARC_SENSORS)):
+    #         new_dict[_SPARC_SENSORS[i]] = sparc_ema[:,i]
+    #     ema_df = pd.DataFrame(new_dict)
+    #     return ema_df
+
     def _convert_output(self, output:List[dict]) -> List[dict]:
         """
         """
@@ -173,5 +220,13 @@ class SPARCWrapper():
                 new_output_list.append(new_o)
         return new_output_list
             
+    def decode(self, batch:dict):
+        """
+        """
+        wav = self.coder.decode(**batch)
+        #TODO: check how wav is formatted
+        batch['output_waveform'] = wav
+        return batch
 
-    
+    def decode_all(self, batches:List[dict]):
+        return 

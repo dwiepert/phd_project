@@ -53,4 +53,17 @@ have a way to remove files/skip files from loader if they can't be loaded? more 
 line 69 in sparc processing only checks if first item in batch is none - means that there will be issues if batch size is greater than 1!
 
 #will need this
-https://github.com/jaekookang/Python-EMA-Viewer
+https://github.com/jaekookang/Python-EMA-Viewer - DOESN'T WORK FOR MOCHA TIMIT
+https://homepages.inf.ed.ac.uk/korin/site/research/mngu0/
+
+
+#READ - x, y
+#ALS data from lab - y,z instead of x 
+#Multiple datasets, per-speaker, demean the value 
+#per speaker aggregation, per-sesssion of ALS 
+#another thought: zscore is good, zscore divide by std, sometimes don't divide by that so get two different ones. Just de-mean instead. 
+
+#GO THROUGH AND MAKE FUNCTIONS TAKE VALUES
+
+https://colab.research.google.com/drive/1TVGJJpOzPiesLPo46gZNCQLMl-y_QIKe#scrollTo=udWpznuiAeJB
+Actual sensor order??? ['TDX','TDY','TBX','TBY','TTX','TTY','LIX','LIY','ULX','ULY','LLX','LLY']
